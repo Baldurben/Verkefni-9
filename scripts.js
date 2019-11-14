@@ -1,6 +1,5 @@
-const companies = document.getElementById('companies');
-let gif = document.createElement("img");
-let texti = document.createElement("P");
+const companies = document.querySelector('.results');
+
 /**
  * Leit að fyrirtækjum á Íslandi gegnum apis.is
  */
@@ -14,12 +13,25 @@ const program = (() => {
   }
 });
 
-function emptystring() {
+function emptystring() { //Ef input empty callar aðal function á þetta
 	var villa = document.createElement("P");
 	villa.innerHTML = "Fyrirtæki má ekki vera autt";
 	companies.appendChild(villa);
 }
-function loading() {
+function notfound() { //Ef ekkert fyrirtæki finnst með gefnu nafni er kallað á þetta
+	let texti = document.createElement("p");
+	texti.innerHTML = "Ekkert fyrirtæki fannst fyrir leitarstreng " + document.getElementById('input').value; 
+	companies.appendChild(texti);
+}
+function connectionfail() { //Ef villa kemur upp með tengingu eða apis.is
+	let texti = document.createElement("p");
+	texti.innerHTML = "Villa við að sækja gögn";
+	companies.appendChild(texti);
+}
+
+function loading() { //Setur loading gif og viðeigandi texta meðan fetchað er gögn
+	let gif = document.createElement("img");
+	let texti = document.createElement("P");
 	texti.innerHTML = "Loading...";
 	texti.setAttribute("class", "loading")
 	gif.setAttribute("src", "loading.gif");
@@ -27,28 +39,43 @@ function loading() {
 	texti.appendChild(gif);
 	companies.appendChild(texti);
 }
-function makeElement(name,sn,active,address) {
-	div = document.createElement("div");
-	div.setAttribute("class", "company")
 
-	dt1 = document.createElement("dt");
-	dt1.innerHTML("Nafn");
-	dd1 = document.createElement("dd");
-	dd1.innerHTML(name);
-	dt2 = document.createElement("dt");
-	dt2.innerHTML("kennitala");
+function makeElement(name,sn,active,address) { // Býr til öll element sem þarf og appendar 
+	div = document.createElement("div");
+	if (active == 1) {div.setAttribute("class", "company company--active");}
+	else {div.setAttribute("class", "company company--inactive");}
+	var nafn = document.createElement("dt");
+	nafn.innerHTML = "Nafn";
+	var realnafn = document.createElement("dd");
+	realnafn.innerHTML = name;
+	var kennitala = document.createElement("dt");
+	kennitala.innerHTML = "Kennitala";
+	var realkennitala = document.createElement("dd");
+	realkennitala.innerHTML = sn;
+	var dl = document.createElement("dl");
+	dl.appendChild(nafn);
+	dl.appendChild(realnafn);
+	dl.appendChild(kennitala);
+	dl.appendChild(realkennitala);
 		if(active == 1) {
-		
-	}
+		adressa = document.createElement("dt");
+		adressa.innerHTML = "Heimilisfang";
+		realadressa = document.createElement("dd");
+		realadressa.innerHTML = address;
+		dl.appendChild(adressa);
+		dl.appendChild(realadressa);
+	}	
+	div.appendChild(dl);
+	companies.appendChild(div);
 }
 
 
-document.getElementById('takki').addEventListener('click', function(event) {
+document.getElementsByTagName('button')[0].addEventListener('click', function(event) {
 	event.preventDefault();
 	while (companies.firstChild) {
 	companies.removeChild(companies.firstChild);
 	}
-	var inputvalue = document.getElementById('input').value;
+	let inputvalue = document.getElementById('input').value;
 	if(inputvalue.trim() == '') {
 		emptystring();
 	}
@@ -64,9 +91,8 @@ document.getElementById('takki').addEventListener('click', function(event) {
 	return result.json();
 	})
 	.then(data => {
-	//var jason = window.localStorage.setItem('data', data);
-	console.log(data.results);
-	//??
+	if(data.results.length == 0) {notfound();}
+	
 	for(let i = 0; i < data.results.length; i++){
 	const{name, sn, active, address} = data.results[i];
 	makeElement(name,sn,active,address);
@@ -74,8 +100,11 @@ document.getElementById('takki').addEventListener('click', function(event) {
 
 	})
 	.then(() => companies.removeChild(companies.firstChild)) //taka loading gif og texta út
-	.catch(error => console.error(error));
-	}
+	.catch(error => {
+		companies.removeChild(companies.firstChild);
+		connectionfail();
+	})
+}
 	
 	
 }, false);
