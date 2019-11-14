@@ -28,7 +28,6 @@ document.getElementsByTagName('button')[0].addEventListener('click', function(ev
 	})
 	.then(data => {
 	if(data.results.length == 0) {notfound();} 
-		
 	for(let i = 0; i < data.results.length; i++){ //Sendir niðurstöður annað til að allt sé ekki á sama stað
 	const{name, sn, active, address} = data.results[i];
 	makeElement(name,sn,active,address);
@@ -46,13 +45,13 @@ document.getElementsByTagName('button')[0].addEventListener('click', function(ev
  
  
 function emptystring() { //Ef input empty callar aðal function á þetta
-	var villa = document.createElement("P");
+	var villa = document.createElement("p");
 	villa.innerHTML = "Fyrirtæki má ekki vera autt";
 	companies.appendChild(villa);
 }
 function notfound() { //Ef ekkert fyrirtæki finnst með gefnu nafni er kallað á þetta
 	let texti = document.createElement("p");
-	texti.innerHTML = "Ekkert fyrirtæki fannst fyrir leitarstreng " + document.getElementById('input').value; 
+	texti.innerHTML = "Ekkert fyrirtæki fannst fyrir leitarstreng " + document.getElementsByTagName('input')[0].value; 
 	companies.appendChild(texti);
 }
 function connectionfail() { //Ef villa kemur upp með tengingu eða apis.is
