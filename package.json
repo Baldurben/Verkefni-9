@@ -5,12 +5,15 @@
   "main": "index.js",
   "scripts": {
     "test": "",
-    "dev": "browser-sync start --server --files index.html styles.css scripts.js"
+    "dev": "browser-sync start --server --files index.html styles.css scripts.js",
+    "pretest": "eslint --ignore-path .gitignore ."
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "browser-sync": "^2.26.7"
-  }
+    "browser-sync": "^2.26.7",
+    "eslint": "^6.6.0"
+  },
+  "dependencies": {}
 }
