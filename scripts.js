@@ -27,6 +27,20 @@ function loading() {
 	texti.appendChild(gif);
 	companies.appendChild(texti);
 }
+function makeElement(name,sn,active,address) {
+	div = document.createElement("div");
+	div.setAttribute("class", "company")
+
+	dt1 = document.createElement("dt");
+	dt1.innerHTML("Nafn");
+	dd1 = document.createElement("dd");
+	dd1.innerHTML(name);
+	dt2 = document.createElement("dt");
+	dt2.innerHTML("kennitala");
+		if(active == 1) {
+		
+	}
+}
 
 
 document.getElementById('takki').addEventListener('click', function(event) {
@@ -50,11 +64,16 @@ document.getElementById('takki').addEventListener('click', function(event) {
 	return result.json();
 	})
 	.then(data => {
-	var jason = window.localStorage.setItem('data', data);
-	JSON.stringify(jason);
-	console.log(jason);
+	//var jason = window.localStorage.setItem('data', data);
+	console.log(data.results);
+	//??
+	for(let i = 0; i < data.results.length; i++){
+	const{name, sn, active, address} = data.results[i];
+	makeElement(name,sn,active,address);
+	}
+
 	})
-	.then(() => companies.removeChild(companies.firstChild))
+	.then(() => companies.removeChild(companies.firstChild)) //taka loading gif og texta út
 	.catch(error => console.error(error));
 	}
 	
